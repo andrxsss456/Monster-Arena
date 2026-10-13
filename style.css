@@ -1,0 +1,153 @@
+
+:root {
+  --bg: #080d18;
+  --panel: #111c2f;
+  --line: #293b55;
+  --text: #edf4ff;
+  --muted: #9aabc5;
+  --cyan: #46e0d0;
+  --gold: #ffd166;
+  --green: #65e6a5;
+  --red: #ff667d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #1a3152, var(--bg) 65%);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button { font: inherit; cursor: pointer; transition: .18s; }
+button:hover:not(:disabled) { filter: brightness(1.2); transform: translateY(-2px); }
+button:disabled { opacity: .4; cursor: not-allowed; }
+
+.app { display: grid; grid-template-columns: 270px minmax(0, 1fr); min-height: 100vh; }
+
+.sidebar { padding: 20px; background: #0b1220; border-right: 1px solid var(--line); }
+
+.brand { font-size: 19px; font-weight: 900; margin-bottom: 22px; letter-spacing: 1px; }
+.brand span { color: var(--cyan); }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+.panel h2 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.level-row, .hp-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin-bottom: 8px; }
+
+.bar { height: 10px; background: #080d17; border-radius: 20px; overflow: hidden; }
+.xp-fill { height: 100%; width: 0; background: linear-gradient(90deg, #805bff, var(--cyan)); transition: .3s; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 12px; }
+.stat { background: #0b1322; border: 1px solid var(--line); padding: 10px; border-radius: 10px; }
+.stat small { display: block; color: var(--muted); margin-bottom: 6px; }
+.stat strong { font-size: 20px; }
+.gold { color: var(--gold); }
+.muted { color: var(--muted); font-size: 12px; }
+
+.team-list { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.team-member { background: #0b1322; border: 1px solid var(--line); border-radius: 9px; padding: 9px; font-size: 12px; }
+.team-member small { display: block; color: var(--muted); margin-top: 4px; }
+
+.btn { border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px; background: #1a2941; color: var(--text); font-weight: 700; }
+.sidebar .btn { width: 100%; margin-top: 8px; }
+.danger { background: #351b2b; color: #ffb4c1; }
+.heal { background: #174b46; }
+
+main { padding: 25px; max-width: 1400px; width: 100%; margin: auto; min-width: 0; }
+.topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+.eyebrow { color: var(--cyan); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+.topline h1 { font-size: clamp(22px, 3vw, 34px); margin: 7px 0; }
+.round { background: #102438; border: 1px solid #31516a; border-radius: 30px; padding: 10px; color: var(--cyan); white-space: nowrap; font-size: 12px; }
+
+.arena {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #2a4560;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #142b47, #13233c 55%, #0c1525 55%);
+  padding: 25px 15px;
+}
+
+.combatants { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 8px; align-items: center; }
+.fighter { text-align: center; min-width: 0; }
+.fighter-label { color: #a9bdd7; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
+.monster { display: grid; place-items: center; height: 150px; font-size: clamp(65px, 9vw, 100px); animation: float 3s ease-in-out infinite; filter: drop-shadow(0 10px 12px #0005); }
+.monster.hit { animation: hit .25s ease; }
+.versus { display: grid; place-items: center; border: 1px solid #ffffff25; border-radius: 50%; height: 38px; background: #0b1425; font-weight: 900; font-size: 11px; }
+.fighter h3 { margin: 5px 0 12px; }
+.hp-meta { max-width: 280px; margin: 0 auto 7px; }
+.hp-bar { max-width: 280px; margin: auto; height: 12px; }
+.hp-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #31d98a, #a5f36a); transition: width .3s; }
+.hp-fill.low { background: linear-gradient(90deg, #ff536f, #ff9a71); }
+.fighter .muted { margin-bottom: 0; }
+
+.actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 15px 0; }
+.action { min-width: 0; min-height: 100px; text-align: left; padding: 13px; border-radius: 13px; border: 1px solid var(--line); background: #111c2f; color: var(--text); }
+.action span { display: block; font-size: 22px; margin-bottom: 8px; }
+.action strong, .action small { display: block; }
+.action strong { font-size: 13px; }
+.action small { color: var(--muted); font-size: 10px; margin-top: 5px; }
+.primary { background: linear-gradient(135deg, #1d4772, #20375b); }
+.special { background: linear-gradient(135deg, #42296a, #242a54); }
+.healing { background: linear-gradient(135deg, #174b46, #173a42); }
+.capture { background: linear-gradient(135deg, #59451d, #322b24); }
+
+.bottom-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; }
+.log { height: 190px; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; }
+.log-entry { font-size: 12px; line-height: 1.5; padding: 9px; border-left: 3px solid #3a5677; background: #0b1322; border-radius: 0 8px 8px 0; }
+.log-entry.good { border-color: var(--green); }
+.log-entry.bad { border-color: var(--red); }
+.log-entry.rare { border-color: var(--gold); }
+
+.upgrade { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: #0b1322; }
+.upgrade strong, .upgrade small { display: block; }
+.upgrade strong { font-size: 12px; }
+.upgrade small { color: var(--muted); font-size: 10px; margin-top: 5px; }
+footer { color: #71839e; font-size: 10px; text-align: center; padding: 20px 0 5px; }
+
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes hit { 0%,100% { transform: translateX(0); } 30% { transform: translateX(-10px); } 70% { transform: translateX(8px); } }
+
+@media (max-width: 950px) {
+  .app { grid-template-columns: 230px minmax(0, 1fr); }
+  .sidebar { padding: 12px; }
+  main { padding: 15px; }
+  .actions { grid-template-columns: 1fr 1fr; }
+  .bottom-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .app { display: flex; flex-direction: column; }
+  .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+  .brand { margin-bottom: 14px; }
+  .team-list { grid-template-columns: repeat(3, 1fr); }
+  main { padding: 12px; }
+  .topline { align-items: flex-start; }
+  .topline h1 { font-size: 22px; }
+  .arena { padding: 18px 8px; }
+  .combatants { grid-template-columns: 1fr 28px 1fr; gap: 3px; }
+  .monster { height: 115px; font-size: 62px; }
+  .fighter h3 { font-size: 14px; }
+  .fighter-label { font-size: 8px; }
+  .versus { height: 28px; font-size: 9px; }
+  .hp-meta { font-size: 10px; }
+  .actions { gap: 7px; }
+  .action { padding: 10px; min-height: 95px; }
+}
