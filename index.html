@@ -3,127 +3,159 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monster Arena</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d18">
+  <title>Monster Arena: Evolution</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">⚔ MONSTER <span>ARENA</span></div>
+<div class="app">
+  <aside class="sidebar">
+    <header class="brand">
+      <div class="logo">⚔</div>
+      <div>MONSTER <span>ARENA</span><small>EVOLUTION RPG</small></div>
+    </header>
 
-      <section class="panel">
-        <h2>Perfil del jugador</h2>
-        <div class="level-row">
-          <strong>Nivel <span id="level">1</span></strong>
-          <span><b id="xp">0</b> / 100 XP</span>
-        </div>
-        <div class="bar"><div id="xpFill" class="xp-fill"></div></div>
+    <section class="panel profile">
+      <div class="section-title">PERFIL DEL ENTRENADOR</div>
+      <div class="level-line">
+        <strong>NIVEL <span id="playerLevel">1</span></strong>
+        <span id="playerXP">0 / 100 XP</span>
+      </div>
+      <div class="xp-bar"><div id="playerXPBar"></div></div>
+      <div class="stats-grid">
+        <div class="stat"><small>ORO</small><strong id="gold">0</strong></div>
+        <div class="stat"><small>VICTORIAS</small><strong id="wins">0</strong></div>
+        <div class="stat"><small>CAPTURADOS</small><strong id="collectionCount">1</strong></div>
+        <div class="stat"><small>POCIONES</small><strong id="potions">3</strong></div>
+      </div>
+    </section>
 
-        <div class="stats">
-          <div class="stat"><small>🪙 Oro</small><strong id="gold">0</strong></div>
-          <div class="stat"><small>🏆 Victorias</small><strong id="wins">0</strong></div>
-          <div class="stat"><small>❤️ Salud</small><strong id="playerHpStat">120</strong></div>
-          <div class="stat"><small>⚔ Ataque</small><strong id="attackStat">20</strong></div>
-        </div>
-      </section>
+    <section class="panel team-panel">
+      <div class="section-title">
+        TU EQUIPO <span id="teamCount">1 / 6</span>
+      </div>
+      <p class="hint">Pulsa un monstruo para cambiar durante el combate.</p>
+      <div id="teamList" class="team-list"></div>
+    </section>
 
-      <section class="panel">
-        <h2>Tu equipo <span id="teamCount">1/6</span></h2>
-        <div id="teamList" class="team-list"></div>
-        <p class="muted">Captura monstruos para completar tu colección.</p>
-      </section>
+    <section class="panel">
+      <div class="section-title">GESTIÓN</div>
+      <button class="menu-btn" id="potionBtn">🧪 Usar poción</button>
+      <button class="menu-btn" id="attackUpgradeBtn">⚔ Mejorar ataque · 80 oro</button>
+      <button class="menu-btn" id="healthUpgradeBtn">🛡 Mejorar salud · 80 oro</button>
+      <button class="menu-btn danger" id="resetBtn">↻ Reiniciar partida</button>
+    </section>
+    <div class="sidebar-footer">Tu aventura. Tu equipo. Tu estrategia.</div>
+  </aside>
 
-      <section class="panel">
-        <h2>Inventario</h2>
-        <p>Pociones: <strong id="potions">2</strong></p>
-        <button class="btn heal" id="potionBtn">🧪 Usar poción</button>
-        <button class="btn danger" id="resetBtn">↻ Reiniciar partida</button>
-      </section>
-    </aside>
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">ARENA DE COMBATE</div>
+        <h1>Monster Arena <span>Evolution</span></h1>
+        <p class="subheading">Elige tu campeón y conquista la arena.</p>
+      </div>
+      <div class="round-badge">RONDA <strong id="round">1</strong></div>
+    </header>
 
-    <main>
-      <header class="topline">
-        <div>
-          <div class="eyebrow">Arena de combate</div>
-          <h1>El siguiente desafío te espera</h1>
-        </div>
-        <div class="round">RONDA <strong id="round">1</strong></div>
-      </header>
+    <section class="battlefield">
+      <div class="battlefield-glow"></div>
+      <div class="battle-header">
+        <span id="battleStatus">COMBATE ACTIVO</span>
+        <span id="weather">✦ Arena salvaje</span>
+      </div>
 
-      <section class="arena">
-        <div class="combatants">
-          <article class="fighter">
-            <span class="fighter-label">Tu campeón</span>
-            <div id="heroSprite" class="monster">🔥</div>
-            <h3>Héroe</h3>
-            <div class="hp-meta">
-              <span>Salud</span><strong id="heroHpText">120 / 120</strong>
-            </div>
-            <div class="bar hp-bar"><div id="heroHpFill" class="hp-fill"></div></div>
-            <p id="heroInfo" class="muted">Listo para luchar</p>
-          </article>
-
-          <div class="versus">VS</div>
-
-          <article class="fighter">
-            <span id="enemyType" class="fighter-label">Enemigo salvaje</span>
-            <div id="enemySprite" class="monster enemy">👾</div>
-            <h3 id="enemyName">Slime</h3>
-            <div class="hp-meta">
-              <span>Salud</span><strong id="enemyHpText">80 / 80</strong>
-            </div>
-            <div class="bar hp-bar"><div id="enemyHpFill" class="hp-fill"></div></div>
-            <p id="enemyInfo" class="muted">Amenaza desconocida</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="actions">
-        <button class="action primary" id="basicBtn">
-          <span>⚔️</span><strong>Ataque básico</strong>
-          <small>Daño normal, sin coste</small>
-        </button>
-        <button class="action special" id="specialBtn">
-          <span>💥</span><strong>Ataque especial</strong>
-          <small>Daño doble, cuesta energía</small>
-        </button>
-        <button class="action healing" id="healBtn">
-          <span>💚</span><strong>Curarse</strong>
-          <small>Recupera hasta 30 HP</small>
-        </button>
-        <button class="action capture" id="captureBtn">
-          <span>🌀</span><strong>Capturar</strong>
-          <small>Más fácil con poca salud</small>
-        </button>
-      </section>
-
-      <section class="bottom-grid">
-        <div class="panel">
-          <h2>📜 Registro de batalla</h2>
-          <div id="log" class="log" aria-live="polite"></div>
-        </div>
-
-        <div class="panel">
-          <h2>⬆ Mejoras</h2>
-          <div class="upgrade">
-            <div><strong>🗡 Afilar arma</strong><small>+5 ataque · 60 oro</small></div>
-            <button class="btn" id="attackUpgrade">Mejorar</button>
+      <div class="fighters">
+        <article class="fighter player-fighter">
+          <span class="fighter-tag">TU MONSTRUO</span>
+          <div class="monster-art" id="heroSprite">🔥</div>
+          <h2 id="heroName">Pyron</h2>
+          <div id="heroElement" class="element-tag fire">FUEGO</div>
+          <div class="fighter-level">Nivel <span id="heroLevel">1</span></div>
+          <div class="health-info"><span>HP</span><strong id="heroHPText">100 / 100</strong></div>
+          <div class="health-bar"><div id="heroHPBar" class="health-fill"></div></div>
+          <div class="fighter-stats">
+            <span>⚔ <b id="heroAttack">20</b></span>
+            <span>⚡ <b id="heroEnergy">100</b></span>
           </div>
-          <div class="upgrade">
-            <div><strong>🛡 Entrenamiento vital</strong><small>+20 salud máxima · 60 oro</small></div>
-            <button class="btn" id="healthUpgrade">Mejorar</button>
-          </div>
-          <div class="upgrade">
-            <div><strong>🧪 Comprar poción</strong><small>+1 poción · 35 oro</small></div>
-            <button class="btn" id="buyPotion">Comprar</button>
-          </div>
-        </div>
-      </section>
+          <div id="heroStatus" class="fighter-status">Listo para luchar</div>
+        </article>
 
-      <footer>Monster Arena · Progreso guardado automáticamente</footer>
-    </main>
-  </div>
+        <div class="versus"><span>VS</span></div>
+
+        <article class="fighter enemy-fighter">
+          <span class="fighter-tag" id="enemyType">ENEMIGO SALVAJE</span>
+          <div class="monster-art enemy-art" id="enemySprite">🟢</div>
+          <h2 id="enemyName">Slime</h2>
+          <div id="enemyElement" class="element-tag water">AGUA</div>
+          <div class="fighter-level">Nivel <span id="enemyLevel">1</span></div>
+          <div class="health-info"><span>HP</span><strong id="enemyHPText">70 / 70</strong></div>
+          <div class="health-bar"><div id="enemyHPBar" class="health-fill enemy-health"></div></div>
+          <div class="fighter-stats">
+            <span>⚔ <b id="enemyAttack">10</b></span>
+            <span>☠ <b id="enemyThreat">NORMAL</b></span>
+          </div>
+          <div id="enemyStatus" class="fighter-status">Esperando tu movimiento</div>
+        </article>
+      </div>
+      <div class="battle-tip" id="battleTip">Consejo: cambia de monstruo para aprovechar las ventajas elementales.</div>
+    </section>
+
+    <section class="combat-actions">
+      <button id="attackBtn" class="action-btn attack-action">
+        <span class="action-icon">⚔️</span>
+        <strong>Ataque</strong>
+        <small>Golpe normal</small>
+      </button>
+      <button id="skillBtn" class="action-btn skill-action">
+        <span class="action-icon">💥</span>
+        <strong id="skillName">Habilidad</strong>
+        <small>25 de energía</small>
+      </button>
+      <button id="healBtn" class="action-btn heal-action">
+        <span class="action-icon">💚</span>
+        <strong>Recuperar</strong>
+        <small>Restaura 25 HP</small>
+      </button>
+      <button id="captureBtn" class="action-btn capture-action">
+        <span class="action-icon">🌀</span>
+        <strong>Capturar</strong>
+        <small>Recluta al enemigo</small>
+      </button>
+      <button id="escapeBtn" class="action-btn escape-action">
+        <span class="action-icon">🏃</span>
+        <strong>Huir</strong>
+        <small>Abandonar combate</small>
+      </button>
+    </section>
+
+    <section class="content-grid">
+      <div class="panel battle-log-panel">
+        <div class="panel-heading"><h3>📜 Registro de batalla</h3><span>EN DIRECTO</span></div>
+        <div id="battleLog" class="battle-log" aria-live="polite"></div>
+      </div>
+
+      <div class="panel upgrades-panel">
+        <div class="panel-heading"><h3>🎯 Estrategia</h3></div>
+        <div class="strategy-card">
+          <span>🔥</span>
+          <div><strong>Ventaja elemental</strong><p>El fuego vence a planta y hielo.</p></div>
+        </div>
+        <div class="strategy-card">
+          <span>🔄</span>
+          <div><strong>Cambia de campeón</strong><p>El cambio consume tu turno.</p></div>
+        </div>
+        <div class="strategy-card">
+          <span>🎁</span>
+          <div><strong>Recompensas</strong><p>Gana oro y experiencia al vencer.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>MONSTER ARENA: EVOLUTION · Progreso guardado en este dispositivo</footer>
+  </main>
+</div>
 </body>
 </html>
