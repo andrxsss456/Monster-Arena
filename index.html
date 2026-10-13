@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Monster Arena</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#111827;
+    color:white;
+}
+
+.container{
+    display:flex;
+    height:100vh;
+}
+
+.sidebar{
+    width:300px;
+    background:#1f2937;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.game{
+    flex:1;
+    padding:20px;
+}
+
+.card{
+    background:#374151;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+}
+
+.bar{
+    width:100%;
+    height:25px;
+    background:#222;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:5px;
+}
+
+.fill{
+    height:100%;
+    background:#22c55e;
+    transition:.3s;
+}
+
+.monsters{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    margin-top:40px;
+}
+
+.monster{
+    width:220px;
+    height:220px;
+    background:#374151;
+    border-radius:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+    font-weight:bold;
+}
+
+.center{
+    text-align:center;
+}
+
+.actions{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+button{
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+.log{
+    margin-top:20px;
+    background:#1f2937;
+    padding:15px;
+    border-radius:10px;
+    height:180px;
+    overflow-y:auto;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+
+<div class="card">
+<h2>Jugador</h2>
+
+<p>Nivel: <span id="nivel">1</span></p>
+<p>XP: <span id="xp">0</span></p>
+<p>Oro: <span id="oro">0</span></p>
+<p>Victorias: <span id="victorias">0</span></p>
+
+</div>
+
+<div class="card">
+<h2>Equipo</h2>
+<div id="equipo"></div>
+</div>
+
+</div>
+
+<div class="game">
+
+<h1>Monster Arena</h1>
+
+<div class="monsters">
+
+<div>
+
+<div class="monster">
+🔥 HEROE
+</div>
+
+<p>HP</p>
+
+<div class="bar">
+<div class="fill" id="heroHp"></div>
+</div>
+
+<p id="heroText"></p>
+
+</div>
+
+<div class="center">
+<h1>VS</h1>
+</div>
+
+<div>
+
+<div class="monster" id="enemigoNombre">
+SLIME
+</div>
+
+<p>HP</p>
+
+<div class="bar">
+<div class="fill" id="enemyHp"></div>
+</div>
+
+<p id="enemyText"></p>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button onclick="atacar(12)">
+Ataque Básico
+</button>
+
+<button onclick="atacar(20)">
+Ataque Fuerte
+</button>
+
+<button onclick="curar()">
+Curar
+</button>
+
+<button onclick="capturar()">
+Capturar
+</button>
+
+</div>
+
+<div class="log" id="log"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let jugador = {
+    nivel:1,
+    xp:0,
+    oro:0,
+    victorias:0,
+    hp:100,
+    hpMax:100,
+    ataque:15
+}
+
+let equipo = [
+    "Pyron"
+];
+
+let monstruos = [
+    "Slime",
+    "Goblin",
+    "Lobo",
+    "Araña",
+    "Murciélago",
+    "Troll",
+    "Dragón",
+    "Fantasma"
+];
+
+let enemigo={};
+
+function log(texto){
+
+    const div=document.getElementById("log");
+
+    div.innerHTML=
+    texto+
+    "<br>"+
+    div.innerHTML;
+}
+
+function generarEnemigo(){
+
+    let nombre;
+
+    if(jugador.victorias>0 &&
+       jugador.victorias%10===0){
+
+        nombre=
+        "JEFE SUPREMO";
+
+        enemigo={
+            nombre:nombre,
+            hp:250+(jugador.victorias*5),
+            hpMax:250+(jugador.victorias*5),
+            ataque:30
+        };
+
+        log("¡Ha aparecido un jefe!");
+    }
+    else{
+
+        nombre=
+        monstruos[
+            Math.floor(
+                Math.random()*monstruos.length
+            )
+        ];
+
+        enemigo={
+            nombre:nombre,
+            hp:60+(jugador.victorias*5),
+            hpMax:60+(jugador.victorias*5),
+            ataque:8+
+            Math.floor(
+                jugador.victorias/2
+            )
+        };
+    }
+
+    actualizar();
+}
+
+function actualizar(){
+
+    document.getElementById(
+        "nivel"
+    ).textContent=
+    jugador.nivel;
+
+    document.getElementById(
+        "xp"
+    ).textContent=
+    jugador.xp;
+
+    document.getElementById(
+        "oro"
+    ).textContent=
+    jugador.oro;
+
+    document.getElementById(
+        "victorias"
+    ).textContent=
+    jugador.victorias;
+
+    document.getElementById(
+        "enemigoNombre"
+    ).textContent=
+    enemigo.nombre;
+
+    document.getElementById(
+        "heroHp"
+    ).style.width=
+    (jugador.hp/
+    jugador.hpMax)*100+"%";
+
+    document.getElementById(
+        "enemyHp"
+    ).style.width=
+    (enemigo.hp/
+    enemigo.hpMax)*100+"%";
+
+    document.getElementById(
+        "heroText"
+    ).innerText=
+    jugador.hp+
+    "/" +
+    jugador.hpMax;
+
+    document.getElementById(
+        "enemyText"
+    ).innerText=
+    enemigo.hp+
+    "/" +
+    enemigo.hpMax;
+
+    let html="";
+
+    equipo.forEach(m=>{
+
+        html+=
+        "• "+m+"<br>";
+
+    });
+
+    document.getElementById(
+        "equipo"
+    ).innerHTML=
+    html;
+}
+
+function atacar(poder){
+
+    let daño=
+    poder+
+    Math.floor(
+        Math.random()*10
+    );
+
+    enemigo.hp-=daño;
+
+    log(
+        "Golpeas a "+
+        enemigo.nombre+
+        " por "+
+        daño
+    );
+
+    if(enemigo.hp<=0){
+
+        victoria();
+
+        return;
+    }
+
+    ataqueEnemigo();
+
+    actualizar();
+}
+
+function ataqueEnemigo(){
+
+    let daño=
+    enemigo.ataque+
+    Math.floor(
+        Math.random()*5
+    );
+
+    jugador.hp-=daño;
+
+    log(
+        enemigo.nombre+
+        " golpea por "+
+        daño
+    );
+
+    if(jugador.hp<=0){
+
+        alert(
+            "Game Over\nVictorias: "+
+            jugador.victorias
+        );
+
+        location.reload();
+    }
+
+}
+
+function curar(){
+
+    jugador.hp+=20;
+
+    if(jugador.hp>
+       jugador.hpMax){
+
+        jugador.hp=
+        jugador.hpMax;
+    }
+
+    log("Te curas 20 HP");
+
+    ataqueEnemigo();
+
+    actualizar();
+}
+
+function capturar(){
+
+    let probabilidad=
+    Math.random();
+
+    if(probabilidad<0.30){
+
+        equipo.push(
+            enemigo.nombre
+        );
+
+        log(
+            enemigo.nombre+
+            " capturado"
+        );
+
+        victoria();
+    }
+    else{
+
+        log(
+            "La captura falló"
+        );
+
+        ataqueEnemigo();
+
+        actualizar();
+    }
+
+}
+
+function victoria(){
+
+    jugador.victorias++;
+
+    jugador.oro+=20;
+
+    jugador.xp+=25;
+
+    log(
+        enemigo.nombre+
+        " derrotado"
+    );
+
+    if(jugador.xp>=100){
+
+        jugador.xp-=100;
+
+        jugador.nivel++;
+
+        jugador.hpMax+=20;
+
+        jugador.hp=
+        jugador.hpMax;
+
+        jugador.ataque+=5;
+
+        log(
+            "¡Subes al nivel "+
+            jugador.nivel+"!"
+        );
+    }
+
+    generarEnemigo();
+
+    actualizar();
+}
+
+generarEnemigo();
+
+</script>
+
+</body>
+</html>
