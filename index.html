@@ -1,511 +1,129 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Monster Arena</title>
-
-<style>
-body{
-    margin:0;
-    background:#0f172a;
-    color:white;
-    font-family:Arial;
-}
-
-#app{
-    display:flex;
-    height:100vh;
-}
-
-#sidebar{
-    width:320px;
-    background:#1e293b;
-    padding:20px;
-    overflow:auto;
-}
-
-#battle{
-    flex:1;
-    padding:20px;
-}
-
-.panel{
-    background:#334155;
-    padding:15px;
-    border-radius:12px;
-    margin-bottom:15px;
-}
-
-.hpbar{
-    height:25px;
-    background:#111;
-    border-radius:10px;
-    overflow:hidden;
-}
-
-.hp{
-    height:100%;
-    background:#22c55e;
-    transition:.3s;
-}
-
-.btn{
-    width:100%;
-    padding:12px;
-    margin-top:8px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#2563eb;
-    color:white;
-    font-weight:bold;
-}
-
-.btn:hover{
-    background:#1d4ed8;
-}
-
-.monster{
-    width:250px;
-    height:250px;
-    background:#334155;
-    border-radius:20px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:28px;
-}
-
-#arena{
-    display:flex;
-    justify-content:space-around;
-    margin-top:40px;
-}
-
-#log{
-    background:#111827;
-    margin-top:20px;
-    border-radius:10px;
-    padding:10px;
-    height:180px;
-    overflow-y:auto;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monster Arena</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-
-<div id="app">
-
-<div id="sidebar">
-
-<div class="panel">
-<h2>Jugador</h2>
-
-Nivel: <span id="nivel"></span><br>
-XP: <span id="xp"></span><br>
-Oro: <span id="oro"></span><br>
-Victorias: <span id="victorias"></span><br>
-
-</div>
-
-<div class="panel">
-
-<h2>Equipo</h2>
-
-<div id="equipo"></div>
-
-</div>
-
-</div>
-
-<div id="battle">
-
-<h1>MONSTER ARENA</h1>
-
-<div id="arena">
-
-<div>
-
-<div class="monster">
-🔥 HEROE
-</div>
-
-<div class="hpbar">
-<div id="heroHp" class="hp"></div>
-</div>
-
-<p id="heroInfo"></p>
-
-</div>
-
-<div>
-
-<div class="monster" id="enemySprite">
-👾
-</div>
-
-<div class="hpbar">
-<div id="enemyHp" class="hp"></div>
-</div>
-
-<p id="enemyInfo"></p>
-
-</div>
-
-</div>
-
-<button class="btn" onclick="basicAttack()">
-Ataque Básico
-</button>
-
-<button class="btn" onclick="specialAttack()">
-Ataque Especial
-</button>
-
-<button class="btn" onclick="heal()">
-Curar
-</button>
-
-<button class="btn" onclick="capture()">
-Capturar
-</button>
-
-<div id="log"></div>
-
-</div>
-
-</div>
-
-<script>
-
-let player={
-    level:1,
-    xp:0,
-    gold:0,
-    wins:0,
-    hp:120,
-    maxHp:120,
-    attack:20
-};
-
-let team=["Pyron"];
-
-let enemy={};
-
-const monsters=[
-"Slime",
-"Goblin",
-"Lobo",
-"Araña",
-"Troll",
-"Fantasma",
-"Dragón",
-"Serpiente"
-];
-
-function save(){
-    localStorage.setItem(
-        "monsterSave",
-        JSON.stringify({
-            player,
-            team
-        })
-    );
-}
-
-function load(){
-
-    let data=
-    localStorage.getItem(
-        "monsterSave"
-    );
-
-    if(data){
-
-        let saveData=
-        JSON.parse(data);
-
-        player=
-        saveData.player;
-
-        team=
-        saveData.team;
-    }
-}
-
-function log(txt){
-
-    document.getElementById("log")
-    .innerHTML=
-    txt+"<br>"+
-    document.getElementById("log")
-    .innerHTML;
-}
-
-function createEnemy(){
-
-    let boss=
-    player.wins>0 &&
-    player.wins%10===0;
-
-    if(boss){
-
-        enemy={
-            name:"JEFE",
-            hp:400,
-            maxHp:400,
-            attack:35
-        };
-
-        log("¡Ha aparecido un jefe!");
-    }
-    else{
-
-        enemy={
-            name:
-            monsters[
-            Math.floor(
-            Math.random()*
-            monsters.length)
-            ],
-            hp:80+
-            player.wins*5,
-            maxHp:80+
-            player.wins*5,
-            attack:10+
-            player.wins
-        };
-    }
-
-    update();
-}
-
-function update(){
-
-    nivel.textContent=
-    player.level;
-
-    xp.textContent=
-    player.xp;
-
-    oro.textContent=
-    player.gold;
-
-    victorias.textContent=
-    player.wins;
-
-    heroInfo.textContent=
-    player.hp+
-    "/" +
-    player.maxHp;
-
-    enemyInfo.textContent=
-    enemy.name+
-    " " +
-    enemy.hp+
-    "/" +
-    enemy.maxHp;
-
-    heroHp.style.width=
-    (player.hp/
-    player.maxHp)*100+"%";
-
-    enemyHp.style.width=
-    (enemy.hp/
-    enemy.maxHp)*100+"%";
-
-    equipo.innerHTML=
-    team.join("<br>");
-}
-
-function enemyTurn(){
-
-    let damage=
-    enemy.attack+
-    Math.floor(
-    Math.random()*10);
-
-    player.hp-=damage;
-
-    log(
-    enemy.name+
-    " hace "+
-    damage+
-    " daño"
-    );
-
-    if(player.hp<=0){
-
-        alert(
-        "Game Over\nVictorias: "+
-        player.wins
-        );
-
-        localStorage.clear();
-
-        location.reload();
-    }
-
-    update();
-}
-
-function basicAttack(){
-
-    let damage=
-    player.attack+
-    Math.floor(
-    Math.random()*10);
-
-    enemy.hp-=damage;
-
-    log(
-    "Ataque: "+
-    damage
-    );
-
-    if(enemy.hp<=0){
-
-        win();
-
-        return;
-    }
-
-    enemyTurn();
-}
-
-function specialAttack(){
-
-    let damage=
-    player.attack*2+
-    Math.floor(
-    Math.random()*15);
-
-    enemy.hp-=damage;
-
-    log(
-    "Ataque especial: "+
-    damage
-    );
-
-    if(enemy.hp<=0){
-
-        win();
-
-        return;
-    }
-
-    enemyTurn();
-}
-
-function heal(){
-
-    player.hp+=30;
-
-    if(player.hp>
-    player.maxHp)
-
-    player.hp=
-    player.maxHp;
-
-    log(
-    "Te curas 30 HP"
-    );
-
-    enemyTurn();
-}
-
-function capture(){
-
-    let chance=
-    Math.random();
-
-    if(chance<0.30){
-
-        if(team.length<6){
-
-            team.push(
-            enemy.name
-            );
-        }
-
-        log(
-        enemy.name+
-        " capturado"
-        );
-
-        win();
-    }
-    else{
-
-        log(
-        "La captura falló"
-        );
-
-        enemyTurn();
-    }
-}
-
-function reward(){
-
-    let choice=
-    Math.floor(
-    Math.random()*3
-    );
-
-    if(choice===0){
-        player.maxHp+=15;
-    }
-
-    if(choice===1){
-        player.attack+=5;
-    }
-
-    if(choice===2){
-        player.gold+=50;
-    }
-}
-
-function win(){
-
-    player.wins++;
-
-    player.gold+=20;
-
-    player.xp+=25;
-
-    reward();
-
-    if(player.xp>=100){
-
-        player.xp-=100;
-
-        player.level++;
-
-        player.maxHp+=20;
-
-        player.attack+=5;
-
-        player.hp=
-        player.maxHp;
-
-        log(
-        "SUBES A NIVEL "+
-        player.level
-        );
-    }
-
-    save();
-
-    createEnemy();
-}
-
-load();
-createEnemy();
-
-</script
-generarEnemigo();
-
-</script>
-
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">⚔ MONSTER <span>ARENA</span></div>
+
+      <section class="panel">
+        <h2>Perfil del jugador</h2>
+        <div class="level-row">
+          <strong>Nivel <span id="level">1</span></strong>
+          <span><b id="xp">0</b> / 100 XP</span>
+        </div>
+        <div class="bar"><div id="xpFill" class="xp-fill"></div></div>
+
+        <div class="stats">
+          <div class="stat"><small>🪙 Oro</small><strong id="gold">0</strong></div>
+          <div class="stat"><small>🏆 Victorias</small><strong id="wins">0</strong></div>
+          <div class="stat"><small>❤️ Salud</small><strong id="playerHpStat">120</strong></div>
+          <div class="stat"><small>⚔ Ataque</small><strong id="attackStat">20</strong></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Tu equipo <span id="teamCount">1/6</span></h2>
+        <div id="teamList" class="team-list"></div>
+        <p class="muted">Captura monstruos para completar tu colección.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Inventario</h2>
+        <p>Pociones: <strong id="potions">2</strong></p>
+        <button class="btn heal" id="potionBtn">🧪 Usar poción</button>
+        <button class="btn danger" id="resetBtn">↻ Reiniciar partida</button>
+      </section>
+    </aside>
+
+    <main>
+      <header class="topline">
+        <div>
+          <div class="eyebrow">Arena de combate</div>
+          <h1>El siguiente desafío te espera</h1>
+        </div>
+        <div class="round">RONDA <strong id="round">1</strong></div>
+      </header>
+
+      <section class="arena">
+        <div class="combatants">
+          <article class="fighter">
+            <span class="fighter-label">Tu campeón</span>
+            <div id="heroSprite" class="monster">🔥</div>
+            <h3>Héroe</h3>
+            <div class="hp-meta">
+              <span>Salud</span><strong id="heroHpText">120 / 120</strong>
+            </div>
+            <div class="bar hp-bar"><div id="heroHpFill" class="hp-fill"></div></div>
+            <p id="heroInfo" class="muted">Listo para luchar</p>
+          </article>
+
+          <div class="versus">VS</div>
+
+          <article class="fighter">
+            <span id="enemyType" class="fighter-label">Enemigo salvaje</span>
+            <div id="enemySprite" class="monster enemy">👾</div>
+            <h3 id="enemyName">Slime</h3>
+            <div class="hp-meta">
+              <span>Salud</span><strong id="enemyHpText">80 / 80</strong>
+            </div>
+            <div class="bar hp-bar"><div id="enemyHpFill" class="hp-fill"></div></div>
+            <p id="enemyInfo" class="muted">Amenaza desconocida</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="actions">
+        <button class="action primary" id="basicBtn">
+          <span>⚔️</span><strong>Ataque básico</strong>
+          <small>Daño normal, sin coste</small>
+        </button>
+        <button class="action special" id="specialBtn">
+          <span>💥</span><strong>Ataque especial</strong>
+          <small>Daño doble, cuesta energía</small>
+        </button>
+        <button class="action healing" id="healBtn">
+          <span>💚</span><strong>Curarse</strong>
+          <small>Recupera hasta 30 HP</small>
+        </button>
+        <button class="action capture" id="captureBtn">
+          <span>🌀</span><strong>Capturar</strong>
+          <small>Más fácil con poca salud</small>
+        </button>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="panel">
+          <h2>📜 Registro de batalla</h2>
+          <div id="log" class="log" aria-live="polite"></div>
+        </div>
+
+        <div class="panel">
+          <h2>⬆ Mejoras</h2>
+          <div class="upgrade">
+            <div><strong>🗡 Afilar arma</strong><small>+5 ataque · 60 oro</small></div>
+            <button class="btn" id="attackUpgrade">Mejorar</button>
+          </div>
+          <div class="upgrade">
+            <div><strong>🛡 Entrenamiento vital</strong><small>+20 salud máxima · 60 oro</small></div>
+            <button class="btn" id="healthUpgrade">Mejorar</button>
+          </div>
+          <div class="upgrade">
+            <div><strong>🧪 Comprar poción</strong><small>+1 poción · 35 oro</small></div>
+            <button class="btn" id="buyPotion">Comprar</button>
+          </div>
+        </div>
+      </section>
+
+      <footer>Monster Arena · Progreso guardado automáticamente</footer>
+    </main>
+  </div>
 </body>
 </html>
